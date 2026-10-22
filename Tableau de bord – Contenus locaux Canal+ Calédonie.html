@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Tableau de bord – Valorisation des contenus locaux</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#EDF3F4;--surface:#fff;--ink:#10202A;--mute:#5A6B75;--line:#D3DEE1;--ok:#0B7A86;--mid:#C98A0B;--low:#C8452F;--track:#E3EBED;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0C171D;--surface:#14252D;--ink:#E7F0F2;--mute:#93A8B1;--line:#26404A;--ok:#38BFCB;--mid:#E3A93A;--low:#F0735C;--track:#1D343E}}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Bricolage Grotesque",system-ui,sans-serif;line-height:1.5}
+.wrap{max-width:960px;margin:0 auto;padding:28px 18px 60px}
+h1{font-size:clamp(1.6rem,4vw,2.3rem);line-height:1.1;margin:0 0 8px;font-weight:800;letter-spacing:-.02em}
+.obj{color:var(--mute);max-width:70ch;margin:0 0 24px}
+.hero{display:grid;grid-template-columns:1.1fr 1fr;gap:18px;margin-bottom:28px}
+@media(max-width:700px){.hero{grid-template-columns:1fr}}
+.global{background:var(--ink);color:var(--bg);border-radius:14px;padding:22px}
+.global .big{font-size:4rem;font-weight:800;line-height:1;letter-spacing:-.03em}
+.global p{margin:8px 0 0;opacity:.8}
+.main{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:16px;justify-content:center}
+.main h2{font-size:1rem;margin:0;font-weight:600;color:var(--mute)}
+.bar{height:10px;background:var(--track);border-radius:6px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;border-radius:6px;background:var(--ok);transition:width .4s}
+.l{display:flex;justify-content:space-between;font-weight:600;margin-bottom:5px}
+.stage{margin:26px 0 10px;font-size:1.05rem;font-weight:800}
+.stage span{font-weight:400;color:var(--mute);margin-left:8px;font-size:.9rem}
+.kpi{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px;margin-bottom:10px}
+.top{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;flex-wrap:wrap}
+.top b{font-size:1.02rem}
+.top small{display:block;color:var(--mute)}
+.badge{font-size:.82rem;font-weight:600;padding:3px 10px;border-radius:20px;color:#fff;background:var(--mute);white-space:nowrap}
+.badge.ok{background:var(--ok)}.badge.mid{background:var(--mid)}.badge.low{background:var(--low)}
+.in{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:12px 0}
+@media(max-width:560px){.in{grid-template-columns:1fr 1fr}}
+label{font-size:.8rem;color:var(--mute);display:block}
+input,textarea{width:100%;font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:7px 9px}
+input:focus-visible,textarea:focus-visible,button:focus-visible{outline:2px solid var(--ok);outline-offset:1px}
+.tg{font-weight:600;padding-top:22px}
+.pct{font-size:.85rem;color:var(--mute);margin-top:5px}
+textarea{min-height:90px;resize:vertical}
+.foot{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}
+button{font:inherit;font-weight:600;border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:8px 14px;border-radius:8px;cursor:pointer}
+.hint{color:var(--mute);font-size:.88rem;margin-top:14px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>Valorisation des contenus locaux</h1>
+<p class="obj">Objectif sur 6 mois : +30 % d’audience des contenus locaux de Canal+ Calédonie et +40 % d’engagement sur les réseaux sociaux associés.</p>
+
+<section class="hero">
+  <div class="global"><div class="big" id="gv">–</div><p id="gt">Avancement global des KPI renseignés</p></div>
+  <div class="main">
+    <h2>Les deux cibles de l’objectif</h2>
+    <div><div class="l"><span>Audience (+30 %)</span><span id="m1v">–</span></div><div class="bar"><i id="m1b"></i></div></div>
+    <div><div class="l"><span>Engagement (+40 %)</span><span id="m2v">–</span></div><div class="bar"><i id="m2b"></i></div></div>
+  </div>
+</section>
+
+<div id="list"></div>
+
+<div class="stage">Contexte à noter<span>événements locaux, campagnes, imprévus : à citer dans le bilan</span></div>
+<textarea id="notes" placeholder="Ex. : élections provinciales en mars, pic d’audience lié à un événement sportif local…"></textarea>
+
+<div class="foot">
+  <button id="ex">Charger l’exemple</button>
+  <button id="rz">Tout effacer</button>
+</div>
+<p class="hint">Saisis la valeur de référence (les 6 mois précédents), puis le point à 3 mois et le résultat à 6 mois. Le dernier chiffre saisi sert au calcul. Les chiffres préremplis sont fictifs.</p>
+</div>
+
+<script>
+var K=[
+{id:1,stage:"Consommer",sub:"La consommation réelle des contenus",n:"Audience des contenus locaux",u:"visionnages",t:"g",v:30},
+{id:2,stage:"Susciter l’intérêt",sub:"Interactions ÷ portée",n:"Taux d’engagement réseaux sociaux",u:"%",t:"g",v:40},
+{id:3,stage:"Être vu",sub:"Visibilité des publications locales",n:"Portée des publications",u:"personnes",t:"g",v:50},
+{id:4,stage:"Fidéliser",sub:"Abonnés Facebook et Instagram",n:"Croissance de la communauté",u:"abonnés",t:"g",v:15},
+{id:5,stage:"Susciter l’intérêt",sub:"Clics vers replay, programme ou newsletter",n:"Taux de clic (CTR)",u:"%",t:"a",v:3},
+{id:6,stage:"Légitimer",sub:"Médias, associations, institutions",n:"Partenariats locaux",u:"partenariats",t:"a",v:5},
+{id:7,stage:"Légitimer",sub:"Part d’abonnés satisfaits (sondage)",n:"Satisfaction des abonnés",u:"%",t:"a",v:80}
+];
+var EX={1:["12000","13500",""],2:["3.2","3.9",""],3:["40000","52000",""],4:["2500","2640",""],5:["1.8","2.4",""],6:["0","2",""],7:["","74",""]};
+var KEY="tdb-contenus-locaux",S={d:{},notes:""};
+try{var s=localStorage.getItem(KEY);if(s)S=JSON.parse(s)}catch(e){}
+if(!S.d)S.d={};
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+function $(i){return document.getElementById(i)}
+function num(x){var n=parseFloat(String(x).replace(",","."));return isNaN(n)?null:n}
+var order=["Être vu","Susciter l’intérêt","Consommer","Fidéliser","Légitimer"],h="";
+order.forEach(function(st){
+  h+='<div class="stage">'+st+'</div>';
+  K.filter(function(k){return k.stage===st}).forEach(function(k){
+    var tg=k.t==="g"?"+"+k.v+" % vs référence":"≥ "+k.v+" "+(k.u==="%"?"%":k.u);
+    h+='<div class="kpi"><div class="top"><div><b>KPI '+k.id+' · '+k.n+'</b><small>'+k.sub+'</small></div><span class="badge" id="b'+k.id+'">À renseigner</span></div>'+
+    '<div class="in">'+
+    (k.t==="g"?'<div><label for="r'+k.id+'">Référence</label><input id="r'+k.id+'" inputmode="decimal"></div>':'<div><label>Référence</label><div class="tg">–</div></div>')+
+    '<div><label for="a'+k.id+'">Point à 3 mois</label><input id="a'+k.id+'" inputmode="decimal"></div>'+
+    '<div><label for="c'+k.id+'">Résultat à 6 mois</label><input id="c'+k.id+'" inputmode="decimal"></div>'+
+    '<div><label>Cible ('+(k.u)+')</label><div class="tg" id="t'+k.id+'">'+tg+'</div></div></div>'+
+    '<div class="bar"><i id="p'+k.id+'"></i></div><div class="pct" id="q'+k.id+'">Saisis une valeur pour voir la progression.</div></div>';
+  });
+});
+$("list").innerHTML=h;
+
+function calc(k){
+  var d=S.d[k.id]||["","",""],ref=num(d[0]),cur=num(d[2]);if(cur===null)cur=num(d[1]);
+  if(cur===null)return null;
+  if(k.t==="g"){
+    if(ref===null||ref<=0)return {need:1};
+    var tgt=ref*(1+k.v/100),g=(cur/ref-1)*100;
+    return {p:Math.max(0,(cur-ref)/(tgt-ref)),txt:(g>=0?"+":"")+g.toFixed(1)+" % vs référence · cible "+tgt.toLocaleString("fr-FR",{maximumFractionDigits:2})};
+  }
+  return {p:Math.max(0,cur/k.v),txt:cur.toLocaleString("fr-FR")+" sur "+k.v+" visés"};
+}
+function update(){
+  var sum=0,cnt=0,res={};
+  K.forEach(function(k){
+    var r=calc(k),b=$("b"+k.id),p=$("p"+k.id),q=$("q"+k.id);res[k.id]=r;
+    if(!r){b.className="badge";b.textContent="À renseigner";p.style.width="0";q.textContent="Saisis une valeur pour voir la progression.";return}
+    if(r.need){b.className="badge";b.textContent="Référence manquante";p.style.width="0";q.textContent="Renseigne la valeur de référence (> 0).";return}
+    var pc=Math.round(r.p*100),cl=pc>=100?"ok":pc>=60?"mid":"low";
+    b.className="badge "+cl;b.textContent=pc>=100?"Atteint":pc>=60?"En bonne voie":"À renforcer";
+    p.style.width=Math.min(pc,100)+"%";p.style.background="var(--"+cl+")";
+    q.textContent=r.txt+" · "+pc+" % de la cible";
+    sum+=Math.min(r.p,1);cnt++;
+  });
+  $("gv").textContent=cnt?Math.round(sum/cnt*100)+" %":"–";
+  $("gt").textContent=cnt?"Avancement moyen sur "+cnt+" KPI renseigné"+(cnt>1?"s":""):"Avancement global des KPI renseignés";
+  [1,2].forEach(function(i){
+    var r=res[i],v=$("m"+i+"v"),b=$("m"+i+"b");
+    if(r&&r.p!==undefined){var pc=Math.round(r.p*100);v.textContent=pc+" %";b.style.width=Math.min(pc,100)+"%";b.style.background="var(--"+(pc>=100?"ok":pc>=60?"mid":"low")+")"}
+    else{v.textContent="–";b.style.width="0"}
+  });
+  save();
+}
+function fill(){
+  K.forEach(function(k){var d=S.d[k.id]||["","",""];
+    if(k.t==="g")$("r"+k.id).value=d[0];$("a"+k.id).value=d[1];$("c"+k.id).value=d[2]});
+  $("notes").value=S.notes||"";
+}
+K.forEach(function(k){
+  [["r",0],["a",1],["c",2]].forEach(function(x){var el=$(x[0]+k.id);if(!el)return;
+    el.addEventListener("input",function(){var d=S.d[k.id]||["","",""];d[x[1]]=el.value;S.d[k.id]=d;update()})});
+});
+$("notes").addEventListener("input",function(){S.notes=$("notes").value;save()});
+$("ex").onclick=function(){S.d=JSON.parse(JSON.stringify(EX));fill();update()};
+$("rz").onclick=function(){S={d:{},notes:""};fill();update()};
+if(!Object.keys(S.d).length&&!S.notes)S.d=JSON.parse(JSON.stringify(EX));
+fill();update();
+</script>
+</body>
+</html>
